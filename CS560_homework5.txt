@@ -1,0 +1,30 @@
+AR tags 
+    36h11 april tags (the default)
+        -need opencv
+            people.???.mit.edu/kaess/apriltags
+            
+        -if apricltags doesn't work outside of ros it won't work inside ros
+
+    1. camera...
+        kinects on two platforms (ubuntu)
+        -kinects can be run off of robot batteries (the ones that are hooked up)
+        
+        -if you have linux running natively, you can use your laptop camera easily (can mount your laptop on the robot...)
+        
+        -if you have a raspi cam that would work too...
+        
+        
+    2. tell computer what the size of the AR tag is, and it can calculate the distance/3d distance from the camera
+        -when it sees the tag, it gives you an offset
+    
+    
+    3. only work in the lab (tags on the outside walls and as tags on obstacles in the middle)
+    
+    4. can do *MOST* of this in ros
+        -use a controller to look for the tags, to "servo into them"???
+        
+    
+    
+tIMED TRIALS, NOT HEAD TO HEAD
+
+door will be closed, entire cubicle area with table will be blocked off with wood

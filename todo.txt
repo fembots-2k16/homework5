@@ -1,0 +1,11 @@
+TODO:: search and "rescue"
+
+1. need to update base_local_planner.yaml and other configurations so that it will allow rerouting around obstacles by moving backwards and repositioning
+    http://answers.ros.org/question/207377/how-to-remove-forward-bias-in-move_base/
+    http://answers.ros.org/question/225835/robot-moves-forward-only/
+    
+2. create an "exploration" navigation scheme using move_base/navigation_stack and the python controller from homework4
+
+3. learn how to use camera and test finding april tags??
+
+4. read project description
