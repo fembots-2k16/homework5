@@ -19,6 +19,8 @@
 # 3. Set up usb_camera configuration
 ## 3.1  (IF JUST USING THE WEBCAM and satisfied with configuration) (skip step 3.2)
 
+    $ mkdir /home/<username>/.ros/camera_info
+
     $ cd /home/<username>/.ros/camera_info/
     
     $ ln -s ~/homework5/head_camera.yaml
