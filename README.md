@@ -50,8 +50,22 @@
     $ mv head_camera.yaml ~/homework5/
     
     $ ln -s ~/homework5/head_camera.yaml
+  
+# 4. Set up soft links (make sure you have https://github.com/fembots-2k16/piberry-launch set up)
     
-# 4. (optional) test to see that usb_cam/apriltags are working in ros?
+    $ cd ~/homework5
+    
+    $ ln -s ~/piberry-launch/pioneer.launch
+    
+    $ ln -s ~/piberry-launch/navigation.launch
+    
+    $ ln -s ~/piberry-launch/usb_cam-test.launch
+    
+    $ ln -s ~/piberry-launch/apriltags.launch
+    
+    $ ln -s ~/piberry-launch/master.launch
+    
+# 5. (optional) test to see that usb_cam/apriltags are working in ros?
     ### note, if previous steps worked, it should work. but camera config files may not work if you're using a different webcame or something
     ### i just pulled up https://april.eecs.umich.edu/wiki/images/9/94/Tagsampler.png on my phone
 
@@ -68,3 +82,7 @@
     $ rostopic echo /tag_detections_pose
     
     ### note, should see poses that are non zero!!! (if poses are zero, need to redo step 3 somehow
+
+# 6. Running the pioneer and navigation and usb_cam and apriltags!!!
+
+    $ roslaunch ~/homework5/master.launch
