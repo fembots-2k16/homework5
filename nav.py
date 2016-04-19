@@ -10,40 +10,28 @@ from geometry_msgs.msg import PoseStamped
 from move_base_msgs.msg import MoveBaseActionResult
 from geometry_msgs.msg import PointStamped
 from geometry_msgs.msg import PoseArray
+from apriltags_ros.msg import AprilTagDetectionArray
 
-point = None
-status = None
-goalz = [[] for x in xrange(3)]
-curGoal = 0
+goal_status = 0
+found_ids = {}
 
-def callback(data):
-    global status
-    print "heyyy"
-    status = data.status.goal_id
-    print "status: ", status
-    print data.result
+def moveBaseActionResultHandler(data):
+    global goal_status
+    goal_status = data.status.goal_id
+    #print "status: ", status
+    #print data.result
+    #http://docs.ros.org/fuerte/api/actionlib_msgs/html/msg/GoalStatus.html
+    pass
 
-def subFn(data):
-    global point
-    print "heyyy"
-#    print data
-    point = data.point
+def tagDetectionsHandler(data):
+    global found_ids
+    detections = data.detections
 
-def aprilFn(array):
-    if (len(array.poses) == 0):
-        print "unseen"
-
-def evalStatus(stat):
-    if (stat == 5):
-        # rejected! need to set new goal set new goal
-        print "goal rejected"
-
-
-def initGoalz():
-    global goalz
-    goalz[0] = [12.0797977448, 1.10401678085]
-    goalz[0] = [10.6293430328, -0.075917750597]
-    goalz[1] = [6.31805467606, 1.28301894665]
+    for detection in detections:
+        id = detection.id
+        if id in found_ids
+        size = detection.size
+        pose = detection.pose
 
 def main():
     global point
@@ -51,48 +39,32 @@ def main():
     print 'what... are your ending coordinates?'
     rospy.init_node('homework4_navigator')
     rate = rospy.Rate(10)
-    sub = rospy.Subscriber('/clicked_point', PointStamped, subFn)
-    rospy.Subscriber("/move_base/result", MoveBaseActionResult, callback)
-    #rospy.Subscriber("/tag_detections_pose", PoseArray, aprilFn)
+    rospy.Subscriber("/move_base/result", MoveBaseActionResult, moveBaseActionResultHandler)
+    rospy.Subscriber("/tag_detections", AprilTagDetectionArray, tagDetectionsHandler)
 
     while (point == None):
        rate.sleep()
-    print "x: ", point.x
-    x = point.x
-    print "y: ", point.y
-    y = point.y
+
+    #TODO::
+    x = 0
+    y = 0
 
 
     velPub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
-    motPub = rospy.Publisher("/cmd_motor_state", MotorState, queue_size=10)
-    goalPub = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
-    motor = MotorState()
-    motor.state = 1
 
     print "make sure you start the motors!"
-    #for i in xrange(20):
-    #    motPub.publish(motor)
-    #    rate.sleep()
 
     client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
 
     #Waits until the action server has started up and started listening for goals
     client.wait_for_server()
 
-    goal = MoveBaseGoal()
-    goal.target_pose.header.frame_id = "map"
-    goal.target_pose.header.stamp = rospy.get_rostime()
-
-    goal.target_pose.pose.position.x = x
-    goal.target_pose.pose.position.y = y
-    goal.target_pose.pose.orientation.w = 1.0
-
-    print "Sending goal!"
-    client.send_goal(goal)
-    while (status != 3):
-        rate.sleep()
-
-    print "Result:", client.get_result()
+    #TODO
+    time = 0
+    three_minutes = 3
+    # MAIN LOOP
+    while time < three_minutes:
+        #NAVIGATE (USING FRONTIER EXPLORATION?)
 
 
 if __name__ == "__main__":
