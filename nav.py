@@ -37,12 +37,12 @@ def evalStatus(stat):
     if (stat == 5):
         # rejected! need to set new goal set new goal
         print "goal rejected"
-        
+
 
 def initGoalz():
     global goalz
     goalz[0] = [12.0797977448, 1.10401678085]
-    goalz[0] = [10.6293430328, -0.075917750597] 
+    goalz[0] = [10.6293430328, -0.075917750597]
     goalz[1] = [6.31805467606, 1.28301894665]
 
 def main():
@@ -58,7 +58,7 @@ def main():
     while (point == None):
        rate.sleep()
     print "x: ", point.x
-    x = point.x 
+    x = point.x
     print "y: ", point.y
     y = point.y
 
@@ -91,10 +91,10 @@ def main():
     client.send_goal(goal)
     while (status != 3):
         rate.sleep()
-    
+
     print "Result:", client.get_result()
 
-    
+
 if __name__ == "__main__":
     try:
         main()
