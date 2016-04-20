@@ -126,18 +126,18 @@ def main():
     exploration_client.wait_for_server()
 
     #move it forward first to appease the lord almighty DWA planner
-    print "move forward."
-    twist = Twist()
-    twist.linear.x = 0.3
-
-    for i in xrange(20):
-        velPub.publish(twist)
-        rate.sleep()
-    #now stop!
-    print "stop."
-    for i in xrange(20):
-        velPub.publish(Twist())
-        rate.sleep()
+    # print "move forward."
+    # twist = Twist()
+    # twist.linear.x = 0.3
+    #
+    # for i in xrange(20):
+    #     velPub.publish(twist)
+    #     rate.sleep()
+    # #now stop!
+    # print "stop."
+    # for i in xrange(20):
+    #     velPub.publish(Twist())
+    #     rate.sleep()
 
 
     #TODO
