@@ -18,6 +18,7 @@ from p2os_msgs.msg import MotorState
 rate = None
 goal_client = None
 exploration_client = None
+exploration_status = None
 goal_status = 0
 interrupt_exploration = False
 found_ids = {}
@@ -29,6 +30,10 @@ def moveBaseActionResultHandler(data):
     #print "status: ", status
     #print data.result
     #http://docs.ros.org/fuerte/api/actionlib_msgs/html/msg/GoalStatus.html
+
+def exploreTaskActionResultHandler(data):
+    global explore_status
+    explore_status = data.status.goal_id
 
 def tagDetectionsHandler(data):
     global found_ids, robot_pose, goal_status, rate, interrupt_exploration, exploration_client
@@ -84,6 +89,8 @@ def odometryHandler(data):
 
 def startExploration():
     global goal_status, exploration_client, rate, interrupt_exploration
+    if interrupt_exploration:
+        return
     exploration_goal = ExploreTaskGoal()
     exploration_goal.explore_boundary.header.seq = 1
     exploration_goal.explore_boundary.header.frame_id = "map"
@@ -93,16 +100,19 @@ def startExploration():
 
     exploration_client.send_goal(exploration_goal)
     print "sent the exploration goal... waiting..."
-    while goal_status < 3 and not interrupt_exploration:
+    while (explore_status == 0 or explore_status == 1) and not interrupt_exploration:
         rate.sleep()
+    exploration_client.cancel_all_goals()
 
 
 def main():
     global goal_client, exploration_client, rate, status
     rospy.init_node('homework5_navigator')
     rate = rospy.Rate(10)
+
     rospy.Subscriber("/odomOdometry", Odometry, odometryHandler)
     rospy.Subscriber("/move_base/result", MoveBaseActionResult, moveBaseActionResultHandler)
+    rospy.Subscriber("/explore_server/result", ExploreTaskActionResult, exploreTaskActionResultHandler)
     rospy.Subscriber("/tag_detections", AprilTagDetectionArray, tagDetectionsHandler)
 
 
@@ -146,7 +156,6 @@ def main():
     # MAIN LOOP
     print "exploration!"
     while time < three_minutes:
-        print "exploration goal 'complete'"
         startExploration()
 
 
