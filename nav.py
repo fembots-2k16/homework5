@@ -46,7 +46,7 @@ def tagDetectionsHandler(data):
             print "we found an april tag!"
             size = detection.size
             #tag detections pose
-            april_pose = detection.pose
+            april_pose = detection.pose.pose
 
             interrupt_exploration = True
             print "interrupt exploration from april tags handler"
