@@ -82,6 +82,9 @@ def tagDetectionsHandler(data):
             goal.target_pose.pose.position.y = goal_y
             goal.target_pose.pose.orientation.z = goal_z_theta
 
+            goal_client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
+            goal_client.wait_for_server()
+
             goal_client.send_goal(goal)
             print "sending goal and waiting"
 
@@ -117,6 +120,11 @@ def startExploration():
     global goal_status, exploration_client, rate, interrupt_exploration
     if interrupt_exploration:
         return
+
+    exploration_client = actionlib.SimpleActionClient("explore_server", ExploreTaskAction)
+    print "waiting for the exploration server..."
+    exploration_client.wait_for_server()
+
     exploration_goal = ExploreTaskGoal()
     exploration_goal.explore_boundary.header.seq = 1
     exploration_goal.explore_boundary.header.frame_id = "map"
@@ -152,14 +160,6 @@ def main():
     for i in xrange(20):
         motPub.publish(motor)
         rate.sleep()
-
-    goal_client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
-    exploration_client = actionlib.SimpleActionClient("explore_server", ExploreTaskAction)
-
-    #Waits until the action server has started up and started listening for goals
-    goal_client.wait_for_server()
-    print "waiting for the exploration server..."
-    exploration_client.wait_for_server()
 
     print "\n--------------------------------------"
     print "set the initial pose in rviz ya fool!!!"
