@@ -101,12 +101,12 @@ def startExploration():
     exploration_goal.explore_center.point.z = 0
 
     exploration_client.send_goal(exploration_goal)
-    print "sent the exploration goal... waiting..."
-    print "interrupt_exploration", interrupt_exploration
-    print "explore_status", explore_status
+    #print "sent the exploration goal... waiting..."
+    #print "interrupt_exploration", interrupt_exploration
+    #print "explore_status", explore_status
     while (explore_status == 0 or explore_status == 1) and not interrupt_exploration:
         rate.sleep()
-    print "exploration goal 'complete'"
+    #print "exploration goal 'complete'"
 
 
 def main():
