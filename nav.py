@@ -107,7 +107,6 @@ def startExploration():
     while (explore_status == 0 or explore_status == 1) and not interrupt_exploration:
         rate.sleep()
     print "exploration goal 'complete'"
-    exploration_client.cancel_all_goals()
 
 
 def main():
