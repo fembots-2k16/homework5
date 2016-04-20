@@ -18,6 +18,7 @@ rate = None
 goal_client = None
 exploration_client = None
 goal_status = 0
+interrupt_exploration = False
 found_ids = {}
 pose = None
 
@@ -44,7 +45,7 @@ def moveBaseActionResultHandler(data):
     #http://docs.ros.org/fuerte/api/actionlib_msgs/html/msg/GoalStatus.html
 
 def tagDetectionsHandler(data):
-    global found_ids, pose, goal_status, rate
+    global found_ids, pose, goal_status, rate, interrupt_exploration
 
     detections = data.detections
 
@@ -52,11 +53,16 @@ def tagDetectionsHandler(data):
         id = detection.id
         if id not in found_ids:
             size = detection.size
+            #tag detections pose
             pose = detection.pose
 
             #TODO:: how to interrupt exploration_client??
+            interrupt_exploration = True
+            #TODO:: also need to use exploration_client to send an interrupt??
+                #google it?
 
-            #TODO:: set up the goal pose!!!
+            #TODO:: set up the goal pose!!! 
+            #based on the current global pose and the tag_detections pose?
             x = 0 #???
             y = 0 #???
             z_theta = 0 #???
@@ -75,16 +81,32 @@ def tagDetectionsHandler(data):
             while goal_status < 3:
                 rate.sleep()
 
-            #TODO:: how do restart exploration_client?
+            interrupt_exploration = False
+            startExploration()
 
 def odometryHandler(data):
     global pose
     pose = pose_msg.pose.pose
 
+def startExploration():
+    global status, exploration_client, rate, interrupt_exploration
+    exploration_goal = ExploreTaskGoal()
+    exploration_goal.explore_boundary.header.seq = 1
+    exploration_goal.explore_boundary.header.frame_id = "map"
+    exploration_goal.explore_center.point.x = 1
+    exploration_goal.explore_center.point.y = 0
+    exploration_goal.explore_center.point.z = 0
+
+    exploration_client.send_goal(exploration_goal)
+    print "sent the exploration goal... waiting..."
+    while status < 3 and not interrupt_exploration:
+        #TODO: need to also interrupt this
+        rate.sleep()
+
 
 def main():
-    global goal_client, exploration_client, rate
-    rospy.init_node('homework4_navigator')
+    global goal_client, exploration_client, rate, status
+    rospy.init_node('homework5_navigator')
     rate = rospy.Rate(10)
     rospy.Subscriber("/odom", Odometry, odometryHandler)
     rospy.Subscriber("/move_base/result", MoveBaseActionResult, moveBaseActionResultHandler)
@@ -96,26 +118,22 @@ def main():
     print "."
     print "make sure you start the motors!"
 
-    goal_client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
+    #goal_client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
     exploration_client = actionlib.SimpleActionClient("explore_server", ExploreTaskAction)
 
     #Waits until the action server has started up and started listening for goals
-    goal_client.wait_for_server()
+    #goal_client.wait_for_server()
+    print "waiting for the exploration server..."
     exploration_client.wait_for_server()
 
     #TODO
     time = 0
     three_minutes = 3
     # MAIN LOOP
+    print "exploration!"
     while time < three_minutes:
-        exploration_goal = ExploreTaskGoal
-        exploration_goal.explore_boundary.header.seq = 1
-        exploration_goal.explore_boundary.header.frame_id = 1
-        exploration_goal.explore_center.point.x = 1
-        exploration_goal.explore_center.point.y = 0
-        exploration_goal.explore_center.point.z = 0
-
-        exploration_client.send_goal(goal)
+        print "exploration goal 'complete'"
+        startExploration()
 
         #TODO:: how to interrupt exploration_client??
 
