@@ -153,11 +153,11 @@ def main():
         motPub.publish(motor)
         rate.sleep()
 
-    #goal_client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
+    goal_client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
     exploration_client = actionlib.SimpleActionClient("explore_server", ExploreTaskAction)
 
     #Waits until the action server has started up and started listening for goals
-    #goal_client.wait_for_server()
+    goal_client.wait_for_server()
     print "waiting for the exploration server..."
     exploration_client.wait_for_server()
 
