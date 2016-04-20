@@ -43,11 +43,13 @@ def tagDetectionsHandler(data):
     for detection in detections:
         id = detection.id
         if id not in found_ids:
+            print "we found an april tag!"
             size = detection.size
             #tag detections pose
             april_pose = detection.pose
 
             interrupt_exploration = True
+            print "interrupt exploration from april tags handler"
             exploration_client.cancel_all_goals()
 
             #MATH for finding global point from april tag (shout out to ryan)
@@ -75,10 +77,10 @@ def tagDetectionsHandler(data):
             goal.target_pose.pose.orientation.z = goal_z_theta
 
             goal_client.send_goal(goal)
+            print "sending goal and waiting"
 
             #wait for the goal to finish!!!
-            while goal_status < 3:
-                rate.sleep()
+            goal_client.wait_for_result()
 
             interrupt_exploration = False
             startExploration()
@@ -100,8 +102,11 @@ def startExploration():
 
     exploration_client.send_goal(exploration_goal)
     print "sent the exploration goal... waiting..."
+    print "interrupt_exploration", interrupt_exploration
+    print "explore_status", explore_status
     while (explore_status == 0 or explore_status == 1) and not interrupt_exploration:
         rate.sleep()
+    print "exploration goal 'complete'"
     exploration_client.cancel_all_goals()
 
 
