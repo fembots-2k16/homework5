@@ -51,6 +51,7 @@ def tagDetectionsHandler(data):
         id = detection.id
         if id not in found_ids:
             print "we found an april tag!"
+            print "tag id:", id
             size = detection.size
             #tag detections pose
             april_pose = detection.pose.pose
@@ -76,7 +77,7 @@ def tagDetectionsHandler(data):
             goal_z_theta = -angle
 
             goal = MoveBaseGoal()
-            goal.target_pose.header.frame_id = "1"
+            goal.target_pose.header.frame_id = "map"
             goal.target_pose.header.stamp = rospy.get_rostime()
 
             goal.target_pose.pose.position.x = goal_x
@@ -129,7 +130,7 @@ def startExploration():
     exploration_goal = ExploreTaskGoal()
     seq_id += 1
     exploration_goal.explore_boundary.header.seq = seq_id
-    exploration_goal.explore_boundary.header.frame_id = "1"
+    exploration_goal.explore_boundary.header.frame_id = "map"
     exploration_goal.explore_center.point.x = 1
     exploration_goal.explore_center.point.y = 0
     exploration_goal.explore_center.point.z = 0
