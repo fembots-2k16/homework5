@@ -12,7 +12,7 @@ from geometry_msgs.msg import PointStamped
 from geometry_msgs.msg import PoseArray
 from apriltags_ros.msg import AprilTagDetectionArray
 from nav_msgs.msg import Odometry
-from frontier_exploration.msg import ExploreTaskAction, ExploreTaskGoal
+from frontier_exploration.msg import ExploreTaskAction, ExploreTaskGoal, ExploreTaskActionResult
 from p2os_msgs.msg import MotorState
 
 rate = None
