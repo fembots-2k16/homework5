@@ -6,7 +6,7 @@ from actionlib_msgs.msg import *
 from move_base_msgs.msg import MoveBaseGoal, MoveBaseAction
 from geometry_msgs.msg import Twist
 from p2os_msgs.msg import MotorState
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from move_base_msgs.msg import MoveBaseActionResult
 from geometry_msgs.msg import PointStamped
 from geometry_msgs.msg import PoseArray
@@ -14,6 +14,7 @@ from apriltags_ros.msg import AprilTagDetectionArray
 from nav_msgs.msg import Odometry
 from frontier_exploration.msg import ExploreTaskAction, ExploreTaskGoal, ExploreTaskActionResult
 from p2os_msgs.msg import MotorState
+import math
 
 rate = None
 goal_client = None
@@ -22,7 +23,9 @@ explore_status = None
 goal_status = 0
 interrupt_exploration = False
 found_ids = {}
+odom_pose = None
 robot_pose = None
+initial_pose = None
 
 def moveBaseActionResultHandler(data):
     global goal_status
@@ -36,7 +39,10 @@ def exploreTaskActionResultHandler(data):
     explore_status = data.status.status
 
 def tagDetectionsHandler(data):
-    global found_ids, robot_pose, goal_status, rate, interrupt_exploration, exploration_client
+    global found_ids, odom_pose, goal_status, rate, interrupt_exploration
+    global exploration_client, initial_pose
+
+    if initial_pose == None: return
 
     detections = data.detections
 
@@ -85,9 +91,27 @@ def tagDetectionsHandler(data):
             interrupt_exploration = False
             startExploration()
 
+def initialPoseHandler(data):
+    global initial_pose
+    initial_pose = data.pose.pose
+
 def odometryHandler(data):
-    global robot_pose
-    robot_pose = data.pose.pose
+    global odom_pose, robot_pose, initial_pose
+    odom_pose = data.pose.pose
+
+    if initial_pose != None:
+        robot_pose = odom_pose
+        robot_pose.position.x += initial_pose.position.x
+        robot_pose.position.y += initial_pose.position.y
+        robot_pose.position.z += initial_pose.position.z
+
+        #tbh why are quarternions used and not just roll pitch yaw :((((((
+        #tbh honestly i'm crying cute cat
+        robot_pose.orientation.x += initial_pose.orientation.x
+        robot_pose.orientation.y += initial_pose.orientation.y
+        robot_pose.orientation.z += initial_pose.orientation.z
+        robot_pose.orientation.w += initial_pose.orientation.w
+
 
 def startExploration():
     global goal_status, exploration_client, rate, interrupt_exploration
@@ -111,7 +135,8 @@ def main():
     rospy.init_node('homework5_navigator')
     rate = rospy.Rate(10)
 
-    rospy.Subscriber("/odomOdometry", Odometry, odometryHandler)
+    rospy.Subscriber("/pose", Odometry, odometryHandler)
+    rospy.Subscriber("/initialpose", PoseWithCovarianceStamped, initialPoseHandler)
     rospy.Subscriber("/move_base/result", MoveBaseActionResult, moveBaseActionResultHandler)
     rospy.Subscriber("/explore_server/result", ExploreTaskActionResult, exploreTaskActionResultHandler)
     rospy.Subscriber("/tag_detections", AprilTagDetectionArray, tagDetectionsHandler)
@@ -136,19 +161,11 @@ def main():
     print "waiting for the exploration server..."
     exploration_client.wait_for_server()
 
-    #move it forward first to appease the lord almighty DWA planner
-    # print "move forward."
-    # twist = Twist()
-    # twist.linear.x = 0.3
-    #
-    # for i in xrange(20):
-    #     velPub.publish(twist)
-    #     rate.sleep()
-    # #now stop!
-    # print "stop."
-    # for i in xrange(20):
-    #     velPub.publish(Twist())
-    #     rate.sleep()
+    print "\n--------------------------------------"
+    print "set the initial pose in rviz ya fool!!!"
+    print "--------------------------------------\n"
+    while initial_pose == None:
+        rate.sleep()
 
     #TODO
     time = 0
