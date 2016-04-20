@@ -16,6 +16,7 @@ from frontier_exploration.msg import ExploreTaskAction, ExploreTaskGoal, Explore
 from p2os_msgs.msg import MotorState
 import math
 
+seq_id = 0
 rate = None
 goal_client = None
 exploration_client = None
@@ -75,7 +76,7 @@ def tagDetectionsHandler(data):
             goal_z_theta = -angle
 
             goal = MoveBaseGoal()
-            goal.target_pose.header.frame_id = "map"
+            goal.target_pose.header.frame_id = "1"
             goal.target_pose.header.stamp = rospy.get_rostime()
 
             goal.target_pose.pose.position.x = goal_x
@@ -117,7 +118,7 @@ def odometryHandler(data):
 
 
 def startExploration():
-    global goal_status, exploration_client, rate, interrupt_exploration
+    global goal_status, exploration_client, rate, interrupt_exploration, seq_id
     if interrupt_exploration:
         return
 
@@ -126,8 +127,9 @@ def startExploration():
     exploration_client.wait_for_server()
 
     exploration_goal = ExploreTaskGoal()
-    exploration_goal.explore_boundary.header.seq = 1
-    exploration_goal.explore_boundary.header.frame_id = "map"
+    seq_id += 1
+    exploration_goal.explore_boundary.header.seq = seq_id
+    exploration_goal.explore_boundary.header.frame_id = "1"
     exploration_goal.explore_center.point.x = 1
     exploration_goal.explore_center.point.y = 0
     exploration_goal.explore_center.point.z = 0
