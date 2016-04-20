@@ -26,14 +26,14 @@ robot_pose = None
 
 def moveBaseActionResultHandler(data):
     global goal_status
-    goal_status = data.status.goal_id
+    goal_status = data.status.status
     #print "status: ", status
     #print data.result
     #http://docs.ros.org/fuerte/api/actionlib_msgs/html/msg/GoalStatus.html
 
 def exploreTaskActionResultHandler(data):
     global explore_status
-    explore_status = data.status.goal_id
+    explore_status = data.status.status
 
 def tagDetectionsHandler(data):
     global found_ids, robot_pose, goal_status, rate, interrupt_exploration, exploration_client
