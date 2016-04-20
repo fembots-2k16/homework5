@@ -25,7 +25,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCL
         Amy -->
 <launch>
 
-  <arg name="no_static_map" default="false"/>
+  <arg name="no_static_map" default="false" />
 
   <arg name="base_global_planner" default="navfn/NavfnROS"/>
   <arg name="base_local_planner" default="dwa_local_planner/DWAPlannerROS"/>
@@ -35,7 +35,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCL
 
     <param name="base_global_planner" value="$(arg base_global_planner)"/>
     <param name="base_local_planner" value="$(arg base_local_planner)"/>
-<<<<<<< HEAD
     <rosparam file="/home/appleowner/homework5/exploration/config/planner.yaml" command="load"/>
 
     <!-- observation sources located in costmap_common.yaml -->
@@ -46,16 +45,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCL
     <rosparam file="/home/appleowner/homework5/local_costmap_params.yaml" command="load" ns="local_costmap" />
     <param name="local_costmap/width" value="10.0"/>
     <param name="local_costmap/height" value="10.0"/>
-=======
-    <rosparam file="/home/saturn/homework5/exploration/config/planner.yaml" command="load"/>
-
-    <!-- observation sources located in costmap_common.yaml -->
-    <rosparam file="/home/saturn/homework5/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="/home/saturn/homework5/costmap_common_params.yaml" command="load" ns="local_costmap" />
-
-    <!-- local costmap, needs size -->
-    <rosparam file="/home/saturn/homework5/local_costmap_params.yaml" command="load" ns="local_costmap" />
->>>>>>> 71dc64e99fe791ce3593a39a47e1c9b87859baea
 
     <!-- static global costmap, static map provides size
     <rosparam file="$(find ~/homework5)/global_costmap_params.yaml" command="load" ns="global_costmap" unless="$(arg no_static_map)"/>
