@@ -18,7 +18,7 @@ from p2os_msgs.msg import MotorState
 rate = None
 goal_client = None
 exploration_client = None
-exploration_status = None
+explore_status = None
 goal_status = 0
 interrupt_exploration = False
 found_ids = {}
