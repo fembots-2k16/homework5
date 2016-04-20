@@ -2,3 +2,14 @@ TODO:: search and "rescue"
     
 1. create an "exploration" navigation scheme using move_base/navigation_stack
 
+// Math for finding global point from april tag
+aprilX = x position given by april tag 
+aprilZ = z position given by april tag
+
+angle = arcsin(aprilX / aprilZ)
+thetaX = aprilZ * cos(angle)
+thetaY = aprilZ * sin(angle)
+// global tag position
+tagX = currentX + thetaX
+tagY = currentY + thetaY
+// need to set goal position to some point a little before the tag coords to keep from running into wall...
