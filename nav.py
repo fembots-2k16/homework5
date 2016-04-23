@@ -132,7 +132,7 @@ def startExploration():
     exploration_goal.explore_boundary.header.seq = seq_id
     exploration_goal.explore_boundary.header.frame_id = "map"
     exploration_goal.explore_center.point.x = 1
-    exploration_goal.explore_center.point.y = 0
+    exploration_goal.explore_center.point.y = -5
     exploration_goal.explore_center.point.z = 0
 
     exploration_client.send_goal(exploration_goal)

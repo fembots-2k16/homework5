@@ -1,0 +1,6 @@
+TODO::
+
+Still not tested with setting a goal near where the apriltags was detected
+
+    i.e. is my math calculated the map-relative goal point correct??? (i'm using ryan's math, but i don't know if my usage of angle and using the negative angle is correct)
+
